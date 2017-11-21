@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "cweagans/composer-patches": "~1.0",
+        "cweagans/composer-patches": "~1.0"
     },
     "config": {
         "preferred-install": "source"
