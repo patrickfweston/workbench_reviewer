@@ -10,11 +10,20 @@
             "email": "weston@palantir.net"
         }
     ],
+    "repositories": {
+        "drupal": {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        }
+    },
     "require": {
-        "cweagans/composer-patches": "~1.0"
+        "cweagans/composer-patches": "~1.0",
+        "drupal/core": *
     },
     "config": {
-        "preferred-install": "source"
+        "preferred-install": {
+            "*": "dist"
+        }
     },
     "extra": {
         "patches": {
