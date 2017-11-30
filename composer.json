@@ -30,7 +30,6 @@
             "drupal/core": {
                 "Hook entity_field_storage_info is broken (https://www.drupal.org/node/2584729)": "https://www.drupal.org/files/issues/core-entity-sql-content-entity-storage-2583111-1_0.patch"
             }
-        },
-        "enable-patching": true
+        }
     }
 }
