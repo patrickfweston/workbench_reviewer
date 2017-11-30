@@ -1087,14 +1087,14 @@ display:
       display_extenders: {  }
       path: admin/workbench/assigned-to-me
       menu:
-        type: tab
+        type: normal
         title: 'Assigned to Me'
         description: ''
         expanded: false
-        parent: workbench.content
-        weight: 6
+        parent: ''
+        weight: 15
         context: '0'
-        menu_name: admin
+        menu_name: workbench
     cache_metadata:
       max-age: 0
       contexts:
