@@ -9,7 +9,8 @@ function workbench_reviewer_entity_bundle_field_info(\Drupal\Core\Entity\EntityT
   // Only add the reviewer field for bundles that are under moderation.
   if ($entity_type->id() == 'node' && array_key_exists('moderation_state', $base_field_definitions)) {
     $definitions['workbench_reviewer'] = \Drupal\Core\Field\BaseFieldDefinition::create('entity_reference')
-      ->setLabel('Workbench Reviewer')
+      ->setLabel(t('Request review'))
+      ->setDescription(t('Enter the name of the user who should review this change.'))
       ->setDisplayConfigurable('view', TRUE)
       ->setDisplayOptions('view', array(
         'label' => 'hidden',
