@@ -38,7 +38,7 @@ function workbench_reviewer_entity_field_storage_info(\Drupal\Core\Entity\Entity
   if ($entity_type->id() == 'node') {
     $definitions['workbench_reviewer'] = \Drupal\Core\Field\BaseFieldDefinition::create('entity_reference')
       ->setName('workbench_reviewer')
-      ->setLabel(t('Workbench Reviewer'))
+      ->setLabel(t('Request review'))
       ->setTargetEntityTypeId($entity_type->id())
       ->setSetting('target_type', 'user');
     return $definitions;
