@@ -18,7 +18,7 @@ function workbench_reviewer_entity_bundle_field_info(\Drupal\Core\Entity\EntityT
       ->setDisplayConfigurable('form', FALSE)
       ->setDisplayOptions('form', array(
         'type' => 'entity_reference_autocomplete',
-        'weight' => -100,
+        'weight' => 100,
         'settings' => array(
           'size' => 60,
           'match_operator' => 'CONTAINS',
@@ -49,24 +49,8 @@ function workbench_reviewer_entity_field_storage_info(\Drupal\Core\Entity\Entity
  *
  */
 function workbench_reviewer_form_node_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
-  // Create a workflow section in the right "advanced" sidebar.
-  $form['workflow'] = [
-    '#type' => 'details',
-    '#title' => t('Workflow'),
-    '#group' => 'advanced',
-    '#attributes' => [
-      'class' => ['node-form-options']
-    ],
-    '#attached' => [
-      'library' => ['node/drupal.node'],
-    ],
-    '#weight' => 100,
-    '#optional' => FALSE
-  ];
-
-  // Move the Workbench Reviewer field to a new "Workflow" tab.
-  $form['revision_log']['#group'] = 'workflow';
-  $form['workbench_reviewer']['#group'] = 'workflow';
+  // Move the Workbench Reviewer field to the 'meta' tab group.
+  $form['workbench_reviewer']['#group'] = 'meta';
 }
 
 /**
