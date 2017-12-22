@@ -46,8 +46,16 @@ function workbench_reviewer_entity_field_storage_info(EntityTypeInterface $entit
     $definitions['workbench_reviewer'] = BaseFieldDefinition::create('entity_reference')
       ->setName('workbench_reviewer')
       ->setLabel(t('Request review'))
-      ->setTargetEntityTypeId($entity_type->id())
-      ->setSetting('target_type', 'user');
+      ->setSettings(array(
+        'handler' => 'views',
+        'handler_settings' => array(
+          'view' => array(
+            'view_name' => 'workbench_reviewers',
+            'display_name' => 'valid_reviewers',
+            'arguments' => array(),
+          )
+        )
+      ));
     return $definitions;
   }
 }
