@@ -1,14 +1,16 @@
 <?php
 
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
 
 /**
  * Implements hook_entity_bundle_field_info().
  */
-function workbench_reviewer_entity_bundle_field_info(\Drupal\Core\Entity\EntityTypeInterface $entity_type, $bundle, array $base_field_definitions) {
+function workbench_reviewer_entity_bundle_field_info(EntityTypeInterface $entity_type, $bundle, array $base_field_definitions) {
   // Only add the reviewer field for bundles that are under moderation.
   if ($entity_type->id() == 'node' && array_key_exists('moderation_state', $base_field_definitions)) {
-    $definitions['workbench_reviewer'] = \Drupal\Core\Field\BaseFieldDefinition::create('entity_reference')
+    $definitions['workbench_reviewer'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Request review'))
       ->setDescription(t('Optional: Enter the name of the user who should review this change.'))
       ->setDisplayConfigurable('view', TRUE)
@@ -34,10 +36,10 @@ function workbench_reviewer_entity_bundle_field_info(\Drupal\Core\Entity\EntityT
 /**
  * Implements hook_entity_field_storage_info().
  */
-function workbench_reviewer_entity_field_storage_info(\Drupal\Core\Entity\EntityTypeInterface $entity_type) {
+function workbench_reviewer_entity_field_storage_info(EntityTypeInterface $entity_type) {
   // Adds the field for Workbench Reviewer to entity that are nodes.
   if ($entity_type->id() == 'node') {
-    $definitions['workbench_reviewer'] = \Drupal\Core\Field\BaseFieldDefinition::create('entity_reference')
+    $definitions['workbench_reviewer'] = BaseFieldDefinition::create('entity_reference')
       ->setName('workbench_reviewer')
       ->setLabel(t('Request review'))
       ->setTargetEntityTypeId($entity_type->id())
@@ -50,7 +52,7 @@ function workbench_reviewer_entity_field_storage_info(\Drupal\Core\Entity\Entity
  * Implements hook_form_BASE_FORM_ID_alter().
  *
  */
-function workbench_reviewer_form_node_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+function workbench_reviewer_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   // Move the Workbench Reviewer field to the 'meta' tab group.
   $form['workbench_reviewer']['#group'] = 'meta';
 }
