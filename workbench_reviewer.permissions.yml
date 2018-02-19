@@ -1,0 +1,12 @@
+assign workbench reviewer:
+  title: 'Assign Workbench Reviewer'
+  description: 'Users with this permissions may view and access the <em>Workbench Reviewer</em> form.'
+  restrict access: FALSE
+be assigned workbench reviewer:
+  title: 'Be assigned Workbench Reviewer'
+  description: 'Users with this permissions may be assigned content to review via <em>Workbench Reviewer</em>.'
+  restrict access: FALSE
+administer workbench reviewer:
+  title: 'Administer Workbench Reviewer'
+  description: 'Users with this permission may modify settings for <em>Workbench Reviewer</em>.'
+  restrict access: FALSE
