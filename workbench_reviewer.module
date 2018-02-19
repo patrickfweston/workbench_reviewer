@@ -3,6 +3,10 @@
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Access\AccessResult;
 
 /**
  * Implements hook_entity_bundle_field_info().
@@ -28,7 +32,17 @@ function workbench_reviewer_entity_bundle_field_info(EntityTypeInterface $entity
           'placeholder' => ''
         ),
       ))
-      ->setSetting('target_type', 'user');
+      ->setSettings(array(
+        'target_type' => 'user',
+        'handler' => 'views',
+        'handler_settings' => array(
+          'view' => array(
+            'view_name' => 'workbench_reviewers',
+            'display_name' => 'valid_reviewers',
+            'arguments' => array(),
+          )
+        )
+      ));
     return $definitions;
   }
 }
@@ -42,10 +56,11 @@ function workbench_reviewer_entity_field_storage_info(EntityTypeInterface $entit
     $definitions['workbench_reviewer'] = BaseFieldDefinition::create('entity_reference')
       ->setName('workbench_reviewer')
       ->setLabel(t('Request review'))
-      ->setTargetEntityTypeId($entity_type->id())
-      ->setSetting('target_type', 'user');
+      ->setTargetEntityTypeId($entity_type->id());
     return $definitions;
   }
+
+  return NULL;
 }
 
 /**
@@ -65,4 +80,12 @@ function workbench_reviewer_preprocess_page(&$variables) {
   if ($variables['is_admin']) {
     $variables['#attached']['library'][] = 'workbench_reviewer/workbench_reviewer';
   }
+}
+
+function workbench_reviewer_entity_field_access($operation, FieldDefinitionInterface $field_definition, AccountInterface $account, FieldItemListInterface $items = NULL) {
+  if ($field_definition->getName() == 'workbench_reviewer' && $operation == 'edit') {
+    // Check if we have permission to assign a reviewer.
+    return AccessResult::forbiddenIf(!AccessResult::allowedIfHasPermission($account, 'assign workbench reviewer')->isAllowed());
+  }
+  return AccessResult::neutral();
 }

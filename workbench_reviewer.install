@@ -10,4 +10,6 @@
  */
 function workbench_reviewer_uninstall() {
   \Drupal::configFactory()->getEditable('field.storage.node.workbench_reviewer')->delete();
+  \Drupal::configFactory()->getEditable('views.view.workbench_reviewer')->delete();
+  \Drupal::configFactory()->getEditable('views.view.workbench_reviewers')->delete();
 }
