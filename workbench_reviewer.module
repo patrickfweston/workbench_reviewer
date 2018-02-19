@@ -83,9 +83,9 @@ function workbench_reviewer_preprocess_page(&$variables) {
 }
 
 function workbench_reviewer_entity_field_access($operation, FieldDefinitionInterface $field_definition, AccountInterface $account, FieldItemListInterface $items = NULL) {
-//  if ($field_definition->getName() == 'workbench_reviewer' && $operation == 'edit') {
+  if ($field_definition->getName() == 'workbench_reviewer' && $operation == 'edit') {
     // Check if we have permission to assign a reviewer.
-//    return AccessResult::forbiddenIf(!AccessResult::allowedIfHasPermission($account, 'assign workbench reviewer')->isAllowed());
-//  }
+    return AccessResult::forbiddenIf(!AccessResult::allowedIfHasPermission($account, 'assign workbench reviewer')->isAllowed());
+  }
   return AccessResult::neutral();
 }
