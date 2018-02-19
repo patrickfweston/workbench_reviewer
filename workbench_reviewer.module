@@ -3,16 +3,16 @@
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\field\Entity\FieldConfig;
 
 /**
  * Implements hook_entity_bundle_field_info().
  */
 function workbench_reviewer_entity_bundle_field_info(EntityTypeInterface $entity_type, $bundle, array $base_field_definitions) {
   // Only add the reviewer field for bundles that are under moderation.
-  if ($entity_type->id() == 'node' && array_key_exists('moderation_state', $base_field_definitions)) {
+  if (_workbench_reviewer_enabled($entity_type->id(), $bundle)) {
     $definitions['workbench_reviewer'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Request review'))
-      ->setDescription(t('Optional: Enter the name of the user who should review this change.'))
       ->setDisplayConfigurable('view', TRUE)
       ->setDisplayOptions('view', array(
         'label' => 'hidden',
@@ -33,6 +33,7 @@ function workbench_reviewer_entity_bundle_field_info(EntityTypeInterface $entity
   }
 }
 
+
 /**
  * Implements hook_entity_field_storage_info().
  */
@@ -42,19 +43,21 @@ function workbench_reviewer_entity_field_storage_info(EntityTypeInterface $entit
     $definitions['workbench_reviewer'] = BaseFieldDefinition::create('entity_reference')
       ->setName('workbench_reviewer')
       ->setLabel(t('Request review'))
-      ->setTargetEntityTypeId($entity_type->id())
-      ->setSetting('target_type', 'user');
+      ->setTargetEntityTypeId($entity_type->id());
     return $definitions;
   }
+
+  return NULL;
 }
 
 /**
  * Implements hook_form_BASE_FORM_ID_alter().
- *
  */
 function workbench_reviewer_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   // Move the Workbench Reviewer field to the 'meta' tab group.
-  $form['workbench_reviewer']['#group'] = 'meta';
+  if (isset($form['workbench_reviewer'])) {
+    $form['workbench_reviewer']['#group'] = 'meta';
+  }
 }
 
 /**
@@ -64,5 +67,98 @@ function workbench_reviewer_preprocess_page(&$variables) {
   // For admin pages, add in our library CSS and other assets.
   if ($variables['is_admin']) {
     $variables['#attached']['library'][] = 'workbench_reviewer/workbench_reviewer';
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function workbench_reviewer_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Add a field to the node settings form to enable Workbench Reviewer.
+  if ($form_id == 'node_type_edit_form' && method_exists($form_state->getFormObject(), 'getEntity')) {
+    // See what operation is happening.
+    $current_operation = $form_state->getFormObject()->getOperation();
+    $disallowed_operations = ['delete', 'cancel'];
+
+    // Check if we have permission.
+    $administer_permitted = \Drupal::currentUser()
+      ->hasPermission('administer workbench reviewer');
+
+    // If we do, add some field elements to the form.
+    if ($administer_permitted && !in_array($current_operation, $disallowed_operations)) {
+      _workbench_reviewer_alter_node_form($form, $form_state, $form_id);
+    }
+  }
+}
+/**
+ * Checks if Workbench Reviewer is enabled for this entity type.
+ *
+ * @param $entity_type
+ * @param $bundle
+ * @return null
+ */
+function _workbench_reviewer_enabled($entity_type, $bundle) {
+  $config = \Drupal::config($entity_type . '.type.' . $bundle);
+  if ($workbench_reviewer = $config->get('third_party_settings')['workbench_reviewer']) {
+    return $workbench_reviewer['enabled'];
+  } else {
+    return FALSE;
+  }
+}
+
+/**
+ * Adds form fields to the node edit form.
+ *
+ * @param $form
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ * @param $form_id
+ */
+function _workbench_reviewer_alter_node_form(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  $entity = $form_state->getFormObject()->getEntity();
+
+  $form['workbench_reviewer'] = [
+    '#type' => 'details',
+    '#title' => t('Workbench Reviewer settings'),
+    '#group' => 'additional_settings',
+    '#open' => FALSE,
+  ];
+
+  $form['workbench_reviewer']['workbench_reviewer'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Enable Workbench Reviewer'),
+    '#default_value' => $entity->getThirdPartySetting('workbench_reviewer', 'enabled'),
+  ];
+
+  $form['#entity_builders'][] = 'workbench_reviewer_form_menu_add_form_builder';
+}
+
+/**
+ * Entity handler for Workbench Reviewer.
+ *
+ * @param $entity_type
+ * @param $entity
+ * @param $form
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ */
+function workbench_reviewer_form_menu_add_form_builder($entity_type, $entity, &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  $enabled = $form_state->getValue('workbench_reviewer');
+  $entity->setThirdPartySetting('workbench_reviewer', 'enabled', $enabled);
+
+  if (!$enabled) {
+    $entity->unsetThirdPartySetting('workbench_reviewer', 'enabled');
+    workbench_reviewer_disable($entity, $entity_type);
+  }
+}
+
+/**
+ * Disable Workbench Reviewer by deleting fields.
+ *
+ * @param $entity
+ * @param $entity_type
+ */
+function workbench_reviewer_disable($entity, $entity_type) {
+  // Deleting field.
+  if ($config = FieldConfig::loadByName($entity_type, $entity->bundle(), 'workbench_reviewer')) {
+    $config->delete();
   }
 }
