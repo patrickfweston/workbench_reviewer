@@ -32,7 +32,17 @@ function workbench_reviewer_entity_bundle_field_info(EntityTypeInterface $entity
           'placeholder' => ''
         ),
       ))
-      ->setSetting('target_type', 'user');
+      ->setSettings(array(
+        'target_type' => 'user',
+        'handler' => 'views',
+        'handler_settings' => array(
+          'view' => array(
+            'view_name' => 'workbench_reviewers',
+            'display_name' => 'valid_reviewers',
+            'arguments' => array(),
+          )
+        )
+      ));
     return $definitions;
   }
 }
@@ -46,18 +56,11 @@ function workbench_reviewer_entity_field_storage_info(EntityTypeInterface $entit
     $definitions['workbench_reviewer'] = BaseFieldDefinition::create('entity_reference')
       ->setName('workbench_reviewer')
       ->setLabel(t('Request review'))
-      ->setSettings(array(
-        'handler' => 'views',
-        'handler_settings' => array(
-          'view' => array(
-            'view_name' => 'workbench_reviewers',
-            'display_name' => 'valid_reviewers',
-            'arguments' => array(),
-          )
-        )
-      ));
+      ->setTargetEntityTypeId($entity_type->id());
     return $definitions;
   }
+
+  return NULL;
 }
 
 /**

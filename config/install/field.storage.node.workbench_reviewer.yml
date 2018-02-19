@@ -4,6 +4,7 @@ dependencies:
   module:
     - node
     - user
+    - workbench_reviewer
 id: node.workbench_reviewer
 field_name: workbench_reviewer
 entity_type: node
