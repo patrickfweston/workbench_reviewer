@@ -4,9 +4,9 @@ dependencies:
   module:
     - user
 id: workbench_reviewers
-label: 'Workbench Reviewers'
+label: 'Workbench: Allowable reviewers (Workbench Reviewer)'
 module: views
-description: ''
+description: 'A view to define the users who may be assigned content to review.'
 tag: ''
 base_table: users_field_data
 base_field: uid
