@@ -6,11 +6,11 @@ use Drupal\Core\Field\BaseFieldDefinition;
  * Implements hook_entity_bundle_field_info().
  */
 function workbench_reviewer_entity_bundle_field_info(\Drupal\Core\Entity\EntityTypeInterface $entity_type, $bundle, array $base_field_definitions) {
-  if ($entity_type->id() == 'node'){
-    dpm($bundle);
-  }
+  /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
+  $moderation_info = Drupal::service('content_moderation.moderation_information');
+
   // Only add the reviewer field for bundles that are under moderation.
-  if ($entity_type->id() == 'node' && array_key_exists('moderation_state', $base_field_definitions)) {
+  if ($moderation_info->shouldModerateEntitiesOfBundle($entity_type, $bundle)) {
     $definitions['workbench_reviewer'] = \Drupal\Core\Field\BaseFieldDefinition::create('entity_reference')
       ->setLabel('Workbench Reviewer')
       ->setDisplayConfigurable('view', TRUE)
