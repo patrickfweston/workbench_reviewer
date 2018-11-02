@@ -1,10 +1,13 @@
 langcode: en
 status: true
 dependencies:
+  config:
+    - system.menu.workbench
   module:
     - node
     - user
-    - workbench_moderation
+    - workbench
+    - content_moderation
 id: workbench_reviewer
 label: 'Workbench: Assigned to Me (Workbench Reviewer)'
 module: views
@@ -1028,10 +1031,10 @@ display:
           entity_field: uid
           plugin_id: standard
       arguments:
-        field_reviewer_target_id:
-          id: field_reviewer_target_id
-          table: node_revision__field_reviewer
-          field: field_reviewer_target_id
+        content_moderation_reviewer:
+          id: content_moderation_reviewer
+          table: node_field_revision
+          field: content_moderation_reviewer
           relationship: none
           group_type: group
           admin_label: ''
@@ -1061,6 +1064,8 @@ display:
           validate_options: {  }
           break_phrase: false
           not: false
+          entity_type: node
+          entity_field: content_moderation_reviewer
           plugin_id: numeric
       display_extenders: {  }
       filter_groups:

@@ -1,0 +1,7 @@
+name: Content Moderation Reviewer
+type: module
+description: Assign pieces of content to users to review
+core: 8.x
+package: Custom
+dependencies:
+  - drupal:content_moderation (>= 8.4)
