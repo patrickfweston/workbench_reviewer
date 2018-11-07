@@ -85,8 +85,8 @@ function content_moderation_reviewer_form_node_form_alter(&$form, FormStateInter
  * Implements hook_preprocess_page().
  */
 function content_moderation_reviewer_preprocess_page(&$variables) {
-  // For admin pages, add in our library.
-  if ($variables['is_admin']) {
+  // For users with access to Workbench, add in our library.
+  if (\Drupal::currentUser()->hasPermission('access workbench')) {
     $variables['#attached']['library'][] = 'content_moderation_reviewer/workbench_reviewer';
   }
 }
