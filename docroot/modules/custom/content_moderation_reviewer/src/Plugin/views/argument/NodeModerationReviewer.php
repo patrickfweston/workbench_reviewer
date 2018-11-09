@@ -16,7 +16,7 @@ class NodeModerationReviewer extends Uid {
   /**
    * {@inheritdoc}
    */
-  public function query() {
+  public function query($group_by = FALSE) {
     $this->ensureMyTable();
     $this->query->addWhere(0, "$this->tableAlias.content_moderation_reviewer", $this->argument, 'IN');
   }

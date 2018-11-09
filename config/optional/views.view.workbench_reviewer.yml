@@ -1031,10 +1031,10 @@ display:
           entity_field: uid
           plugin_id: standard
       arguments:
-        content_moderation_reviewer:
-          id: content_moderation_reviewer
+        nodes_moderation_reviewer:
+          id: nodes_moderation_reviewer
           table: node_field_revision
-          field: content_moderation_reviewer
+          field: nodes_moderation_reviewer
           relationship: none
           group_type: group
           admin_label: ''
