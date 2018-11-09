@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Definition of Drupal\content_moderation_reviewer\Plugin\views\argument\NodeModerationReviewer.
- */
-
 namespace Drupal\content_moderation_reviewer\Plugin\views\argument;
 
 use Drupal\user\Plugin\views\argument\Uid;
@@ -22,8 +17,8 @@ class NodeModerationReviewer extends Uid {
    * {@inheritdoc}
    */
   public function query() {
-    $table = $this->ensureMyTable();
-    $this->query->addWhere(0, "$table.content_moderation_reviewer", $this->argument, 'IN');
+    $this->ensureMyTable();
+    $this->query->addWhere(0, "$this->tableAlias.content_moderation_reviewer", $this->argument, 'IN');
   }
 
 }
