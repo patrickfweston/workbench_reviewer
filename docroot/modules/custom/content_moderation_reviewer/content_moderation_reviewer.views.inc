@@ -9,7 +9,7 @@
  * hook_views_data_alter()
  */
 function content_moderation_reviewer_views_data_alter(&$data) {
-  $data['node_field_data']['nodes_moderation_reviewer'] = array(
+  $data['node_field_revision']['nodes_moderation_reviewer'] = array(
     'title' => t('Node Moderation Reviewer'),
     'filter' => array(
       'title' => t('Node Moderation Reviewer'),
