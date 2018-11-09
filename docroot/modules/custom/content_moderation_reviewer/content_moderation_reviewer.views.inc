@@ -6,7 +6,6 @@
  */
 
 /**
- *
  * Implements hook_views_data_alter().
  */
 function content_moderation_reviewer_views_data_alter(&$data) {
