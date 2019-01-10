@@ -1,17 +1,18 @@
+uuid: 93b4b64e-d3fc-4ff1-8d48-f22aeb93e2b1
 langcode: en
 status: true
 dependencies:
-  config:
-    - system.menu.workbench
   module:
+    - content_moderation
+    - content_moderation_reviewer
     - node
     - user
-    - workbench
-    - content_moderation
-id: workbench_reviewer
-label: 'Workbench: Assigned to Me (Workbench Reviewer)'
+_core:
+  default_config_hash: ymLQ0t3VuiOp8xrNHcrqoIl0q83j6v5iizb9me08Alk
+id: content_moderation_reviewer
+label: 'Content Moderation: Assigned to Me'
 module: views
-description: 'Provides a more detailed listing of content assigned to the user on the site for workflow purposes'
+description: 'Provides a more detailed listing of content assigned to the current user from the reviewer field.'
 tag: ''
 base_table: node_field_revision
 base_field: vid
@@ -153,7 +154,7 @@ display:
               empty_column: false
               responsive: ''
           default: '-1'
-          empty_table: false
+          empty_table: true
       row:
         type: fields
       fields:
@@ -910,7 +911,7 @@ display:
           group: 1
           exposed: false
           expose:
-            operator_id: false
+            operator_id: ''
             label: ''
             description: ''
             use_operator: false
@@ -929,62 +930,57 @@ display:
             optional: true
             widget: select
             multiple: false
-            remember: 0
+            remember: false
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
           entity_type: node
           plugin_id: latest_revision
-        moderation_state:
-          id: moderation_state
+        moderation_state_1:
+          id: moderation_state_1
           table: node_field_revision
           field: moderation_state
           relationship: none
           group_type: group
           admin_label: ''
-          operator: '!='
-          value: published
+          operator: in
+          value: {  }
           group: 1
           exposed: true
           expose:
-            operator_id: moderation_state_op
+            operator_id: moderation_state_1_op
             label: 'Moderation state'
-            description: null
+            description: ''
             use_operator: false
-            operator: moderation_state_op
-            identifier: moderation_state
+            operator: moderation_state_1_op
+            identifier: moderation_state_1
             required: false
             remember: false
             multiple: false
             remember_roles:
               authenticated: authenticated
-          is_grouped: true
+              anonymous: '0'
+              view_only: '0'
+              content_editor: '0'
+              content_approver: '0'
+              content_publisher: '0'
+              technical_administrator: '0'
+              administrator: '0'
+            reduce: false
+          is_grouped: false
           group_info:
-            label: 'Workflow State'
+            label: ''
             description: ''
-            identifier: moderation_state
+            identifier: ''
             optional: true
             widget: select
             multiple: false
             remember: false
             default_group: All
             default_group_multiple: {  }
-            group_items:
-              1:
-                title: Draft
-                operator: '='
-                value: draft
-              2:
-                title: 'Needs Review'
-                operator: '='
-                value: needs_review
-              3:
-                title: 'Needs Publishing Review'
-                operator: '='
-                value: needs_publishing_review
+            group_items: {  }
           entity_type: node
-          entity_field: moderation_state
-          plugin_id: string
+          plugin_id: moderation_state_filter
       sorts:
         revision_timestamp:
           id: revision_timestamp
@@ -1001,7 +997,7 @@ display:
           entity_type: node
           entity_field: revision_timestamp
           plugin_id: date
-      title: 'Workbench: Assigned to Me'
+      title: 'Moderated reviewer'
       header:
         area:
           id: area
@@ -1017,7 +1013,18 @@ display:
             format: basic_html
           plugin_id: text
       footer: {  }
-      empty: {  }
+      empty:
+        area_text_custom:
+          id: area_text_custom
+          table: views
+          field: area_text_custom
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: true
+          tokenize: false
+          content: 'No content has been assigned to you for review.'
+          plugin_id: text_custom
       relationships:
         uid:
           id: uid
@@ -1073,7 +1080,7 @@ display:
         groups:
           1: AND
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
@@ -1082,15 +1089,16 @@ display:
         - user
         - 'user.node_grants:view'
         - user.permissions
-      tags: {  }
-  page_1:
+      tags:
+        - 'config:workflow_list'
+  page_assigned_to_me:
     display_plugin: page
-    id: page_1
+    id: page_assigned_to_me
     display_title: Page
     position: 1
     display_options:
       display_extenders: {  }
-      path: admin/workbench/assigned-to-me
+      path: admin/content/assigned-to-me
       menu:
         type: normal
         title: 'Assigned to Me'
@@ -1101,7 +1109,7 @@ display:
         context: '0'
         menu_name: workbench
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
@@ -1110,4 +1118,5 @@ display:
         - user
         - 'user.node_grants:view'
         - user.permissions
-      tags: {  }
+      tags:
+        - 'config:workflow_list'

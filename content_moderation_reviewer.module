@@ -20,7 +20,7 @@ function content_moderation_reviewer_entity_bundle_field_info(EntityTypeInterfac
   // Only add the reviewer field for bundles that are under moderation.
   if ($moderation_info->shouldModerateEntitiesOfBundle($entity_type, $bundle)) {
     $definitions['content_moderation_reviewer'] = BaseFieldDefinition::create('entity_reference')
-      ->setLabel('Content Moderation Reviewer')
+      ->setLabel('Reviewer')
       ->setDisplayConfigurable('view', TRUE)
       ->setDisplayOptions('view', [
         'label' => 'hidden',
@@ -49,7 +49,7 @@ function content_moderation_reviewer_entity_field_storage_info(EntityTypeInterfa
   if ($entity_type->id() == 'node') {
     $definitions['content_moderation_reviewer'] = BaseFieldDefinition::create('entity_reference')
       ->setName('content_moderation_reviewer')
-      ->setLabel(t('Content Moderation Reviewer'))
+      ->setLabel(t('Reviewer'))
       ->setTargetEntityTypeId($entity_type->id())
       ->setRevisionable(TRUE)
       ->setSetting('target_type', 'user');
@@ -79,16 +79,6 @@ function content_moderation_reviewer_form_node_form_alter(&$form, FormStateInter
   // Move the Workbench Reviewer field to a new "Workflow" tab.
   $form['revision_log']['#group'] = 'workflow';
   $form['content_moderation_reviewer']['#group'] = 'workflow';
-}
-
-/**
- * Implements hook_preprocess_page().
- */
-function content_moderation_reviewer_preprocess_page(&$variables) {
-  // For users with access to Workbench, add in our library.
-  if (\Drupal::currentUser()->hasPermission('access workbench')) {
-    $variables['#attached']['library'][] = 'content_moderation_reviewer/workbench_reviewer';
-  }
 }
 
 /**
