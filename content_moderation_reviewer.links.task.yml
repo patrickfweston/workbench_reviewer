@@ -1,0 +1,5 @@
+content_moderation.moderated_reviewer:
+  title: 'Assigned to Me'
+  route_name: view.content_moderation_reviewer.page_assigned_to_me
+  parent_id: system.admin_content
+  weight: 1
